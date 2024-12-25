@@ -7,6 +7,9 @@ export default {
   ],
   theme: {
     extend: {
+      boxShadow: {
+        'card': '0px 0px 8px 0px rgba(0, 0, 0, 0.12)',
+      },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",

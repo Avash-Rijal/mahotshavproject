@@ -2,17 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@layer utilities {
+  .container {
+    width: clamp(280px - 2rem, 97dvw - 2rem, 1300px);
+    margin-inline: auto;
+  }
 }
 
-@media (prefers-color-scheme: dark) {
+/* :root {
+  --background: #ffffff;
+  --foreground: #171717;
+} */
+
+/* @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
-}
+} */
 
 body {
   color: var(--foreground);
