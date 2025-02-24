@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import Link from "next/link";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -38,16 +39,16 @@ export default function Header() {
           {/* Desktop Menu */}
           <div className="hidden lg:flex items-center space-x-8">
             {menuItems.map((item) => (
-              <button
+              <Link
                 key={item.name}
                 className="relative font-medium text-black hover:text-[#A15842] transition-colors duration-300 py-2
                           after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-[#A15842] 
                           after:left-0 after:bottom-0 after:transition-all after:duration-300
                           hover:after:w-full text-lg"
-                onClick={() => handleNavigation(item.route)}
+                href={item.route}
               >
                 {item.name}
-              </button>
+              </Link>
             ))}
           </div>
 

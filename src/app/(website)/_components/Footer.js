@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Footer() {
   return (
     <div className="w-full bg-[#FBE8EF]">
@@ -5,19 +7,19 @@ export default function Footer() {
         <div class="md:inline block w-full text-center md:text-left">
           <span>&#169; 2024. All rights reserved. </span>
           <span id="credits">
-            Website by <a href="/">Mahotshav</a>
+            Website by <Link href="/">Mahotshav</Link>
           </span>
         </div>
         <div class="inline-flex ml-0 md:ml-auto space-x-3 md:pt-0 pt-4">
-          <a href="#" rel="noopener noreferrer" class="items-center gap-2">
+          <Link href="#" rel="noopener noreferrer" class="items-center gap-2">
             <span class="hover:underline focus-visible:underline">Terms</span>
-          </a>
-          <a href="#" rel="noopener noreferrer" class="items-center gap-2">
+          </Link>
+          <Link href="#" rel="noopener noreferrer" class="items-center gap-2">
             <span class="hover:underline focus-visible:underline">Privacy</span>
-          </a>
-          <a href="#" rel="noopener noreferrer" class="items-center gap-2">
+          </Link>
+          <Link href="#" rel="noopener noreferrer" class="items-center gap-2">
             <span class="hover:underline focus-visible:underline">Contact</span>
-          </a>
+          </Link>
         </div>
       </footer>
     </div>

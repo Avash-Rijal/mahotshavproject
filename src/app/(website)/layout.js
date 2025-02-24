@@ -1,7 +1,9 @@
 import { Poppins, Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import Header from "./Components/Header";
-import Footer from "./Components/Footer";
+import "../../app/globals.css";
+import Header from "./_components/Header";
+import Footer from "./_components/Footer";
+import { Toaster } from "@/components/ui/toaster";
+
 
 const poppins = Poppins({
   weight: ['400', '500', '600', '700'],
@@ -35,6 +37,7 @@ export default function RootLayout({ children }) {
       >
         <Header />
         {children}
+        <Toaster />
         <Footer />
       </body>
     </html>

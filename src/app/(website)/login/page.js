@@ -1,6 +1,70 @@
-import Image from "next/image";
+"use client"
+
+import { useToast } from "@/hooks/use-toast";
+import { authClient } from "lib/auth-client";
+import { useState } from "react";
 
 export default function Page() {
+
+  const { toast } = useToast();
+
+  const initialFormState = {
+    name: "",
+    email: "",
+    password: "",
+    phone: "",
+    dob: "",
+    address: "",
+  };
+
+  const [formData, setFormData] = useState(initialFormState);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const resetForm = () => {
+    setFormData(initialFormState);
+  };
+
+  async function onSubmit(values) {
+    values.preventDefault();
+    console.log("submit clicked");
+    
+    const { data, error } = await authClient.signIn.email({
+      email: formData.email,
+      password: formData.password,
+      callbackURL: (formData.email === "admin@gmail.com" || formData.email === "dhirazdhungel@gmail.com") ? "/dashboard" : "/events"
+    }, {
+      onRequest: (ctx) => {
+        toast({
+          title: "Please wait..."
+        })
+      },
+      onSuccess: (ctx) => {
+        const userData = {
+          email: formData.email,
+          password: formData.password,
+        };
+        
+        console.log('Form submission successful:', userData);
+        
+        resetForm();
+        
+        toast({
+          title: "User validated Successfully",
+          status: "success"
+        });
+      },
+      onError: (ctx) => {
+        console.log(ctx);
+        toast({
+          title: "User account not created.",
+        });
+      },
+    });
+  }
+
   return (
     <div className="pt-24 pb-24 bg-gradient-to-br from-[#FCE5D8] to-[#FBE8EF] min-h-screen flex flex-col">
       <div className="container mx-auto flex flex-col lg:flex-row items-center justify-between mt-12 px-6">
@@ -32,7 +96,8 @@ export default function Page() {
             <p className="text-sm text-[#A15842] mb-6">
               Book any events easily with no hassle
             </p>
-            <form className="space-y-4">
+            <form className="space-y-4"
+            onSubmit={onSubmit}>
               <div>
                 <label
                   htmlFor="email"
@@ -42,21 +107,25 @@ export default function Page() {
                 </label>
                 <input
                   type="email"
-                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
                   className="bg-transparent w-full mt-1 p-2 border-b border-neutral-400 focus:outline-none focus:border-primary-600"
                 />
               </div>
 
               <div>
                 <label
-                  htmlFor="address"
+                  htmlFor="password"
                   className="block text-sm font-medium text-neutral-700"
                 >
                   Password
                 </label>
                 <input
                   type="password"
-                  id="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
                   className="bg-transparent w-full mt-1 p-2 border-b border-neutral-400 focus:outline-none focus:border-primary-600"
                 />
               </div>
@@ -72,7 +141,7 @@ export default function Page() {
             <p className="mt-4 text-sm">
               Don't have an account?
               <a
-                href="#"
+                href="/register"
                 className="text-[#A15842] font-medium hover:underline ms-2"
               >
                 Create an Account
