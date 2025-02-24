@@ -1,6 +1,28 @@
 import Image from "next/image";
+import { db } from "../db";
+import { events } from "../drizzle/schema";
 
-export default function Home() {
+export default async function Home() {
+  const eventsTable = await db
+    .select({
+      id: events.id,
+      name: events.name,
+      venue: events.venueName,
+      price: events.ticketPrice,
+      startTime: events.startTime,
+      endTime: events.endTime,
+      startDate: events.startDate,
+      endDate: events.endDate,
+      eventCity: events.city,
+      participants: events.expectedParticipants,
+      guests: events.guestList,
+      entryType: events.entryType,
+      description: events.description,
+    })
+    .from(events);
+
+  const firstEvent = eventsTable[11];
+
   return (
     <div className="pt-24 pb-24 bg-gradient-to-br from-[#FCE5D8] to-[#FBE8EF] min-h-screen">
       <div className="container justify-center flex flex-col lg:flex-row lg:gap-16 gap-8 py-24 items-center">
@@ -9,21 +31,22 @@ export default function Home() {
             src="/event.png"
             alt="event image"
             width={500}
-            height={320} 
+            height={320}
             className="rounded-lg hover:scale-105 transform transition-transform duration-300 object-cover"
           />
         </div>
 
         <div className="flex flex-col gap-3">
           <div className="text-[#5B5B5B] font-normal text-xl">
-            Date | Location
+            {firstEvent.startDate} | {firstEvent.venue}
           </div>
           <h3 className="text-[#92403F] text-4xl font-semibold cursor-pointer">
-            New Year Eve Musical Festival
+            {firstEvent.name}
           </h3>
-          <p className="text-[#2C2C2C] font-normal text-2xl">
-            Event Description
-          </p>
+          <div
+            className="text-[#2C2C2C] font-normal text-2xl"
+            dangerouslySetInnerHTML={{ __html: firstEvent.description }}
+          />
         </div>
       </div>
       <div className="container py-24 w-full">
@@ -126,54 +149,33 @@ export default function Home() {
           Upcoming Events
         </h2>
         <div className="container grid grid-cols-1 lg:grid-cols-2 mt-12">
-          <div className="flex justify-between max-w-[600px] p-4">
-            <div className="flex flex-col gap-3">
-              <div className="text-[#5B5B5B] font-normal text-sm">
-                Date | Location
+          {eventsTable.slice(1, 5).map((data) => (
+            <div className="flex justify-between max-w-[600px] p-4">
+              <div className="flex flex-col gap-3">
+                <div className="text-[#5B5B5B] font-normal text-sm">
+                  {data.startDate} | {data.venue}
+                </div>
+                <h3 className="text-[#92403F] text-base font-semibold cursor-pointer">
+                  {data.name}
+                </h3>
+                <div
+                  className="text-[#2C2C2C] font-normal text-md"
+                  dangerouslySetInnerHTML={{ __html: data.description }}
+                />
+                <button className="bg-[#92403F] text-white py-2 max-w-32 font-normal text-sm rounded-sm">
+                  Join Now
+                </button>
               </div>
-              <h3 className="text-[#92403F] text-base font-semibold cursor-pointer">
-                New Year Eve Musical Festival
-              </h3>
-              <p className="text-[#2C2C2C] font-normal text-md">
-                Event Description
-              </p>
-              <button className="bg-[#92403F] text-white py-2 max-w-32 font-normal text-sm rounded-sm">
-                Join Now
-              </button>
-            </div>
-            <div className="cursor-pointer overflow-hidden w-[134px] h-[250px] relative">
-              <Image
-                src="/event.png"
-                alt="event photo"
-                className="hover:scale-105 transform transition-transform duration-300 object-cover"
-                layout="fill"
-              />
-            </div>
-          </div>
-          <div className="flex justify-between max-w-[600px] p-4">
-            <div className="flex flex-col gap-3">
-              <div className="text-[#5B5B5B] font-normal text-sm">
-                Date | Location
+              <div className="cursor-pointer overflow-hidden w-[134px] h-[250px] relative">
+                <Image
+                  src="/event.png"
+                  alt="event photo"
+                  className="hover:scale-105 transform transition-transform duration-300 object-cover"
+                  layout="fill"
+                />
               </div>
-              <h3 className="text-[#92403F] text-base font-semibold cursor-pointer">
-                New Year Eve Musical Festival
-              </h3>
-              <p className="text-[#2C2C2C] font-normal text-md">
-                Event Description
-              </p>
-              <button className="bg-[#92403F] text-white py-2 max-w-32 font-normal text-sm rounded-sm">
-                Join Now
-              </button>
             </div>
-            <div className="cursor-pointer overflow-hidden w-[134px] h-[250px] relative">
-              <Image
-                src="/event.png"
-                alt="event photo"
-                className="hover:scale-105 transform transition-transform duration-300 object-cover"
-                layout="fill"
-              />
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </div>

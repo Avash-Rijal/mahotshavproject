@@ -32,7 +32,7 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx"
-, "src/app/(application)/dashboard/myEvents/[eventId]/page.js"  ],
+, "src/app/(application)/dashboard/myEvents/[eventId]/page.js", "src/app/(website)/events/route.js", "src/app/(application)/dashboard/myEvents/[eventId]/route.js"  ],
   "exclude": [
     "node_modules"
   ]

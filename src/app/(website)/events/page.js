@@ -1,11 +1,43 @@
 "use client";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Search, ChevronDown } from "lucide-react";
+import Link from "next/link";
 
 export default function Page() {
   const [timeDropdown, setTimeDropdown] = useState(false);
   const [locationDropdown, setLocationDropdown] = useState(false);
+  const [eventsTable, setEventsTable] = useState([]);
+  const [firstEvent, setFirstEvent] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch('/api/events');
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch events');
+        }
+        
+        const data = await response.json();
+        
+        if (Array.isArray(data)) {
+          setEventsTable(data);
+          if (data.length > 0) {
+            setFirstEvent(data[0]);
+          }
+        } else {
+          throw new Error('Data is not in the expected format');
+        }
+      } catch (error) {
+        console.error("Error fetching events:", error);
+        setError(error.message);
+      }
+    };
+
+    fetchEvents();
+  }, []);
 
   return (
     <div className="pt-24 pb-24 bg-gradient-to-br from-[#FCE5D8] to-[#FBE8EF] min-h-screen">
@@ -22,27 +54,28 @@ export default function Page() {
 
         <div className="flex flex-col gap-3">
           <div className="text-[#5B5B5B] font-normal text-xl">
-            Date | Location
+            {firstEvent?.startDate} | {firstEvent?.venue}
           </div>
           <h3 className="text-[#92403F] text-4xl font-semibold cursor-pointer">
-            New Year Eve Musical Festival
+            {firstEvent?.name}
           </h3>
-          <p className="text-[#2C2C2C] font-normal text-2xl">
-            Event Description
-          </p>
+          <div
+            className="text-[#2C2C2C] font-normal text-2xl"
+            dangerouslySetInnerHTML={{ __html: firstEvent?.description }}
+          />
         </div>
       </div>
+
       <div className="container pb-24 w-full">
         <h2 className="font-bold text-[#92403F] text-4xl uppercase text-center tracking-widest">
           Find Events
         </h2>
         <div className="grid lg:grid-cols-3 gap-5 md:grid-cols-2 grid-cols-1 w-2/3 mt-12">
-          {/* <div className="flex gap-2 p-4 bg-orange-50/50"> */}
           <div className="relative flex-1">
             <input
               type="text"
               placeholder="Search"
-              className="w-full px-4 py-2 rounded-md  bg-[#FFFFFF]/20 hover:bg-gray-20 shadow-card focus:outline-none focus:ring-1 focus:ring-orange-200"
+              className="w-full px-4 py-2 rounded-md bg-[#FFFFFF]/20 hover:bg-gray-20 shadow-card focus:outline-none focus:ring-1 focus:ring-orange-200"
             />
             <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
           </div>
@@ -111,79 +144,35 @@ export default function Page() {
             )}
           </div>
         </div>
+
         <div className="container grid gap-8 grid-cols-1 lg:grid-cols-2 mt-12">
-          <div className="flex justify-between max-w-[600px] p-4">
-            <div className="flex flex-col gap-3">
-              <div className="text-[#5B5B5B] font-normal text-sm">
-                Date | Location
+          {eventsTable.map((data) => (
+            <div className="flex justify-between max-w-[600px] p-4" key={data.id}>
+              <div className="flex flex-col gap-3">
+                <div className="text-[#5B5B5B] font-normal text-sm">
+                  {data.startDate} | {data.venue}
+                </div>
+                <h3 className="text-[#92403F] text-base font-semibold cursor-pointer">
+                  {data.name}
+                </h3>
+                <div
+                  className="text-[#2C2C2C] font-normal text-md"
+                  dangerouslySetInnerHTML={{ __html: data.description }}
+                />
+                <Link href={`/events/${data.id}`} className="bg-[#92403F] cursor-pointer text-center text-white py-2 max-w-32 font-normal text-sm rounded-sm">
+                  Join Now
+                </Link>
               </div>
-              <h3 className="text-[#92403F] text-base font-semibold cursor-pointer">
-                New Year Eve Musical Festival
-              </h3>
-              <p className="text-[#2C2C2C] font-normal text-md">
-                Event Description
-              </p>
-              <button className="bg-[#92403F] text-white py-2 max-w-32 font-normal text-sm rounded-sm">
-                Join Now
-              </button>
-            </div>
-            <div className="cursor-pointer overflow-hidden w-[134px] h-[250px] relative">
-              <Image
-                src="/event.png"
-                alt="event photo"
-                className="hover:scale-105 transform transition-transform duration-300 object-cover"
-                layout="fill"
-              />
-            </div>
-          </div>
-          <div className="flex justify-between max-w-[600px] p-4">
-            <div className="flex flex-col gap-3">
-              <div className="text-[#5B5B5B] font-normal text-sm">
-                Date | Location
+              <div className="cursor-pointer overflow-hidden w-[134px] h-[250px] relative">
+                <Image
+                  src="/event.png"
+                  alt="event photo"
+                  className="hover:scale-105 transform transition-transform duration-300 object-cover"
+                  layout="fill"
+                />
               </div>
-              <h3 className="text-[#92403F] text-base font-semibold cursor-pointer">
-                New Year Eve Musical Festival
-              </h3>
-              <p className="text-[#2C2C2C] font-normal text-md">
-                Event Description
-              </p>
-              <button className="bg-[#92403F] text-white py-2 max-w-32 font-normal text-sm rounded-sm">
-                Join Now
-              </button>
             </div>
-            <div className="cursor-pointer overflow-hidden w-[134px] h-[250px] relative">
-              <Image
-                src="/event.png"
-                alt="event photo"
-                className="hover:scale-105 transform transition-transform duration-300 object-cover"
-                layout="fill"
-              />
-            </div>
-          </div>
-          <div className="flex justify-between max-w-[600px] p-4">
-            <div className="flex flex-col gap-3">
-              <div className="text-[#5B5B5B] font-normal text-sm">
-                Date | Location
-              </div>
-              <h3 className="text-[#92403F] text-base font-semibold cursor-pointer">
-                New Year Eve Musical Festival
-              </h3>
-              <p className="text-[#2C2C2C] font-normal text-md">
-                Event Description
-              </p>
-              <button className="bg-[#92403F] text-white py-2 max-w-32 font-normal text-sm rounded-sm">
-                Join Now
-              </button>
-            </div>
-            <div className="cursor-pointer overflow-hidden w-[134px] h-[250px] relative">
-              <Image
-                src="/event.png"
-                alt="event photo"
-                className="hover:scale-105 transform transition-transform duration-300 object-cover"
-                layout="fill"
-              />
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </div>

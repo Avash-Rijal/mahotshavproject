@@ -53,6 +53,7 @@ export const verification = pgTable("verification", {
 export const events = pgTable("events", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
+  category: text("category"),
   startTime: text("start_time"),
   endTime: text("end_time"),
   startDate: text("start_date"),

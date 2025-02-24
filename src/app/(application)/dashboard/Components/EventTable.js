@@ -22,7 +22,7 @@ const EventTable = async () => {
     })
     .from(events);
 
-    console.log(eventsTable);
+  console.log(eventsTable);
 
   return (
     <div className="bg-white shadow-md rounded-lg p-6">
@@ -83,7 +83,7 @@ const EventTable = async () => {
                 {event.guests.map((guest) => `${guest}, `)}
               </td>
               <td className="py-4 text-[#171A1F] font-normal text-sm text-center">
-              <Link href={`/dashboard/myEvents/${event.id}`}>
+                <Link href={`/dashboard/myEvents/${event.id}`}>
                   <button className="bg-[#A15842] text-white px-4 py-2 rounded-[4px]">
                     View Details
                   </button>

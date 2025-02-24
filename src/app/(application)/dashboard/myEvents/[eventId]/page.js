@@ -5,9 +5,7 @@ import Sidebar from "../../Components/Sidebar";
 import dynamic from "next/dynamic";
 import CreateEventForm from "../../Components/CreateEventForm";
 import { useParams } from "next/navigation";
-import { db } from "@/app/db";
-import { events } from "@/app/drizzle/schema";
-import { eq } from "drizzle-orm";
+
 const CustomEditor = dynamic(
   () => import("../../Components/CKeditor/CKeditor"),
   { ssr: false }
@@ -15,61 +13,53 @@ const CustomEditor = dynamic(
 
 export default function Page() {
   const params = useParams();
-  const eventId = params.eventId;  
+  const eventId = params.eventId;
   const [eventDetails, setEventDetails] = useState(null);
+  const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
-  console.log(db.select({id: events.id}).from(events))
+  const formRef = useRef(null);
+
   useEffect(() => {
     const fetchEventDetails = async () => {
       try {
-        const event = await db
-          .select({
-            id: events.id,
-            name: events.name,
-            venue: events.venueName,
-            price: events.ticketPrice,
-            startTime: events.startTime,
-            endTime: events.endTime,
-            startDate: events.startDate,
-            endDate: events.endDate,
-            eventCity: events.city,
-            participants: events.expectedParticipants,
-            guests: events.guestList,
-            entryType: events.entryType,
-            description: events.description,
-          })
-          .from(events)
-          .where(eq(events.id, eventId))
-          .then((results) => results[0]);
+        const res = await fetch(`/api/events/${eventId}`);
+        if (!res.ok) {
+          throw new Error("Failed to fetch event data.");
+        }
+        const data = await res.json();
+        if (data) {
+          const formattedData = {
+            eventName: data.name,
+            eventCategory: data.category,
+            eventCity: data.eventCity,
+            venueName: data.venue,
+            startTime: new Date(data.startTime)
+              .toTimeString()
+              .slice(0, 5),
+            endTime: new Date(data.endTime).toTimeString().slice(0, 5),
+            startDate: data.startDate,
+            endDate: data.endDate,
+            ticketPrice: data.price,
+            guestList: data.guests,
+            participants: data.participants,
+            entryType: data.entryType || "Free",
+            description: data.description || "",
+          };
 
-        const formattedData = {
-          eventName: event.name,
-          eventCity: event.eventCity,
-          venueName: event.venue,
-          startTime: new Date(event.startTime).toTimeString().slice(0, 5),
-          endTime: new Date(event.endTime).toTimeString().slice(0, 5),
-          startDate: event.startDate,
-          endDate: event.endDate,
-          ticketPrice: event.price,
-          guestList: event.guests,
-          participants: event.participants,
-          entryType: event.entryType || "Free",
-          description: event.description || "",
-        };
-
-        setEventDetails(formattedData);
+          setEventDetails(formattedData);
+          setDescription(formattedData.description);
+        }
       } catch (error) {
         console.error("Error fetching event details:", error);
       }
     };
 
-    fetchEventDetails();
+    if (eventId) {
+      fetchEventDetails();
+    }
   }, [eventId]);
-  
-  const formRef = useRef();
-  const [description, setDescription] = useState(eventDetails?.description || "");
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
 
   const handleAddEvent = (e) => {
     e.preventDefault();
@@ -88,8 +78,8 @@ export default function Page() {
         description,
       };
 
-      const response = await fetch("/api/events", {
-        method: "POST",
+      const response = await fetch(`/api/events/${eventId}`, {
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formDataToSubmit),
       });
@@ -98,10 +88,6 @@ export default function Page() {
 
       if (result.success) {
         setMessage("Event created successfully!");
-        if (formRef.current) {
-          formRef.current.resetForm();
-        }
-        setDescription("");
       } else {
         setMessage(result.error || "Something went wrong.");
       }

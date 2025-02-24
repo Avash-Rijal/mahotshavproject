@@ -1,9 +1,17 @@
 "use client";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState, use } from "react";
 
-export default function page() {
+export default function EventDetailPage({ params }) {
+  const resolvedParams = use(params);
+  const singleEventId = resolvedParams.singleEventId;
+
+  console.log(singleEventId);
+  
   const [ticketCount, setTicketCount] = useState(1);
+  const [event, setEvent] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const increaseTicketCount = () => {
     setTicketCount((prevCount) => prevCount + 1);
@@ -18,21 +26,47 @@ export default function page() {
     if (value > 0) setTicketCount(value);
   };
 
+  useEffect(() => {
+    const fetchEvent = async () => {
+      try {
+        setLoading(true);
+        console.log(`Fetching event with ID: ${singleEventId}`);
+        const response = await fetch(`/api/events/${singleEventId}`);
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error(`Server responded with status ${response.status}: ${errorText}`);
+          throw new Error(`Failed to fetch event: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log("Event data received:", data);
+        setEvent(data);
+      } catch (error) {
+        console.error("Error fetching event:", error);
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchEvent();
+  }, [singleEventId]);
+
   return (
     <div className="pt-24 pb-24 bg-gradient-to-br from-[#FCE5D8] to-[#FBE8EF] min-h-screen">
-      <div className="container shadow-lgoverflow-hidden py-24">
-        <div className="flex p-8 gap-8">
+      <div className="container shadow-lg overflow-hidden py-24">
+        <div className="flex flex-col md:flex-row p-8 gap-8">
           <div>
             <div className="text-gray-700">
               <p className="text-sm">
-                December 30, 2025 | Dasarath Stadium, Kathmandu
+                {event?.startDate} | {event?.venue}, {event?.eventCity}
               </p>
               <h1 className="text-3xl font-semibold text-[#92403F]">
-                New Year Eve Musical Festival
+                {event?.name}
               </h1>
               <p className="mt-4 text-lg">
-                Join us for a celebration of culture, art, and community on the
-                occasion of New Year 2025.
+                {event?.description || "Join us for this amazing event!"}
               </p>
             </div>
             <div className="mt-6">
@@ -52,40 +86,38 @@ export default function page() {
           </div>
         </div>
 
-        {/* Main Content */}
         <div className="grid grid-cols-1 md:grid-cols-3 p-8 gap-8">
-          {/* Left Content */}
           <div className="md:col-span-2">
             <h2 className="text-xl font-bold text-gray-800">
-              New Year Eve Musical Festival: A Night of Music, Culture, and
-              Celebration
+              {event?.name}: {event?.description ? event?.description.slice(0, 50) + "..." : "Event Details"}
             </h2>
             <p className="mt-4 text-gray-600">
-              Start your countdown to 2025 in style at the New Year Eve Musical
-              Festival, the biggest event of the year! Happening on December 30,
-              2025, at Dasarath Stadium, Kathmandu, this electrifying evening
-              blends music, culture, and community into one unforgettable
-              experience.
+              {event?.description || "No detailed description available for this event."}
             </p>
             <h3 className="mt-8 text-lg font-bold text-gray-800">
-              What’s in Store?
+              Event Details
             </h3>
             <p className="mt-2 text-gray-600">
-              This isn’t just another event—it’s the celebration you’ve been
-              waiting for!
+              Date: {event?.startDate}{event?.endDate ? ` to ${event?.endDate}` : ""}<br />
+              Time: {new Date(event?.startTime).toLocaleTimeString()} - {new Date(event?.endTime).toLocaleTimeString()}<br />
+              Venue: {event?.venue}, {event?.eventCity}<br />
+              Entry Type: {event?.entryType}<br />
+              {event?.price && event?.price !== "0" && `Ticket Price: ${event?.price}`}
             </p>
-            <h3 className="mt-8 text-lg font-bold text-gray-800">
-              Headlining Performances
-            </h3>
-            <ul className="list-disc list-inside mt-2 text-gray-600">
-              <li>Sabin Rai and The Pharaoh</li>
-              <li>Tribal Rain</li>
-              <li>Indira Joshi</li>
-              <li>Albatross</li>
-            </ul>
+            {event?.guests && event?.guests.length > 0 && (
+              <>
+                <h3 className="mt-8 text-lg font-bold text-gray-800">
+                  Special Guests
+                </h3>
+                <ul className="list-disc list-inside mt-2 text-gray-600">
+                  {event?.guests.map((guest, index) => (
+                    <li key={index}>{guest}</li>
+                  ))}
+                </ul>
+              </>
+            )}
           </div>
 
-          {/* Right Form */}
           <div className="bg-[#FDFDFD4D]/30 p-6 rounded-lg shadow">
             <h3 className="text-2xl font-medium">Join This Event</h3>
             <p className="text-sm text-gray-600 mt-2">
@@ -94,15 +126,16 @@ export default function page() {
             <form className="mt-4">
               <div className="my-4">
                 <label
-                  htmlFor="email"
+                  htmlFor="name"
                   className="block text-sm font-medium text-neutral-700"
                 >
                   Name*
                 </label>
                 <input
-                  type="name"
+                  type="text"
                   id="name"
                   className="bg-transparent w-full p-2 border-b border-neutral-400 focus:outline-none focus:border-primary-600"
+                  required
                 />
               </div>
               <div className="my-4">
@@ -113,22 +146,24 @@ export default function page() {
                   Email*
                 </label>
                 <input
-                  type="mail"
-                  id="mail"
+                  type="email"
+                  id="email"
                   className="bg-transparent w-full p-2 border-b border-neutral-400 focus:outline-none focus:border-primary-600"
+                  required
                 />
               </div>
               <div className="my-4">
                 <label
-                  htmlFor="email"
+                  htmlFor="phone"
                   className="block text-sm font-medium text-neutral-700"
                 >
                   Phone Number*
                 </label>
                 <input
-                  type="number"
-                  id="number"
+                  type="tel"
+                  id="phone"
                   className="bg-transparent w-full p-2 border-b border-neutral-400 focus:outline-none focus:border-primary-600"
+                  required
                 />
               </div>
               <div className="flex items-center justify-between">
@@ -163,7 +198,7 @@ export default function page() {
                 type="submit"
                 className="mt-6 w-full bg-[#92403F] text-white py-4 px-4 rounded-xl shadow"
               >
-                Create Account
+                Book Tickets
               </button>
             </form>
           </div>
