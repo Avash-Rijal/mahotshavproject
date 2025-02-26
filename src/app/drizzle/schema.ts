@@ -73,10 +73,20 @@ export const events = pgTable("events", {
     .references(() => user.id),
 });
 
+export const participants = pgTable("participants",{
+  id: text("id").primaryKey(),
+  eventId: text("event_id")
+    .notNull()
+    .references(() => events.id),
+  eventTicket:text("event_ticket").array(),
+  revenue: text("revenue"),
+})
+
 
 export const schema = {
   user,
   session,
+  participants,
   account,
   events,
   verification,

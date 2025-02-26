@@ -39,6 +39,7 @@ export default function Page() {
     fetchEvents();
   }, []);
 
+
   return (
     <div className="pt-24 pb-24 bg-gradient-to-br from-[#FCE5D8] to-[#FBE8EF] min-h-screen">
       <div className="container justify-center flex flex-col lg:flex-row lg:gap-16 gap-8 py-24 items-center">
@@ -60,7 +61,7 @@ export default function Page() {
             {firstEvent?.name}
           </h3>
           <div
-            className="text-[#2C2C2C] font-normal text-2xl"
+            className="text-[#2C2C2C] font-normal text-2xl line-clamp-2 overflow-hidden"
             dangerouslySetInnerHTML={{ __html: firstEvent?.description }}
           />
         </div>
@@ -156,7 +157,7 @@ export default function Page() {
                   {data.name}
                 </h3>
                 <div
-                  className="text-[#2C2C2C] font-normal text-md"
+                  className="text-[#2C2C2C] font-normal text-md line-clamp-2 overflow-hidden"
                   dangerouslySetInnerHTML={{ __html: data.description }}
                 />
                 <Link href={`/events/${data.id}`} className="bg-[#92403F] cursor-pointer text-center text-white py-2 max-w-32 font-normal text-sm rounded-sm">

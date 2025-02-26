@@ -151,7 +151,7 @@ export async function POST(req: Request) {
       endDate: validatedData.endDate, 
       city: validatedData.eventCity,
       venueName: validatedData.venueName,
-      expectedParticipants: validatedData.participants.toString(), // Fixed this line
+      expectedParticipants: validatedData.participants.toString(),
       guestList: validatedData.guestList || [],
       entryType: validatedData.entryType,
       ticketPrice: validatedData.ticketPrice || "0",

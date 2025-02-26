@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { db } from "../db";
 import { events } from "../drizzle/schema";
+import Link from "next/link";
 
 export default async function Home() {
   const eventsTable = await db
@@ -21,7 +22,7 @@ export default async function Home() {
     })
     .from(events);
 
-  const firstEvent = eventsTable[11];
+  const firstEvent = eventsTable[0];
 
   return (
     <div className="pt-24 pb-24 bg-gradient-to-br from-[#FCE5D8] to-[#FBE8EF] min-h-screen">
@@ -38,22 +39,23 @@ export default async function Home() {
 
         <div className="flex flex-col gap-3">
           <div className="text-[#5B5B5B] font-normal text-xl">
-            {firstEvent.startDate} | {firstEvent.venue}
+            {firstEvent?.startDate} | {firstEvent?.venue}
           </div>
           <h3 className="text-[#92403F] text-4xl font-semibold cursor-pointer">
-            {firstEvent.name}
+            {firstEvent?.name}
           </h3>
           <div
             className="text-[#2C2C2C] font-normal text-2xl"
-            dangerouslySetInnerHTML={{ __html: firstEvent.description }}
+            dangerouslySetInnerHTML={{ __html: firstEvent?.description }}
           />
         </div>
       </div>
       <div className="container py-24 w-full">
-        <h2 className="container font-bold text-[#92403F] text-4xl uppercase text-center tracking-widest">
-          Explore Event Catagories
-        </h2>
-        <div className="container p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 my-12">
+      <h2 className="container font-bold text-[#92403F] text-4xl uppercase text-center tracking-widest">
+        Explore Event Categories
+      </h2>
+      <div className="container p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 my-12">
+        <Link href="/categories/music">
           <div className="bg-[#FFFFFF33]/10 p-3 rounded-xl shadow-card">
             <div className="relative max-w-full h-48">
               <Image
@@ -65,6 +67,9 @@ export default async function Home() {
             </div>
             <p className="text-[#A15842] font-medium text-xl mt-3">Music</p>
           </div>
+        </Link>
+
+        <Link href="/categories/art">
           <div className="bg-[#FFFFFF33]/10 p-3 rounded-xl shadow-card">
             <div className="relative max-w-full h-48">
               <Image
@@ -76,6 +81,9 @@ export default async function Home() {
             </div>
             <p className="text-[#A15842] font-medium text-xl mt-3">Art</p>
           </div>
+        </Link>
+
+        <Link href="/categories/culture">
           <div className="bg-[#FFFFFF33]/10 p-3 rounded-xl shadow-card">
             <div className="relative max-w-full h-48">
               <Image
@@ -87,6 +95,9 @@ export default async function Home() {
             </div>
             <p className="text-[#A15842] font-medium text-xl mt-3">Cultural</p>
           </div>
+        </Link>
+
+        <Link href="/categories/sports">
           <div className="bg-[#FFFFFF33]/10 p-3 rounded-xl shadow-card">
             <div className="relative max-w-full h-48">
               <Image
@@ -98,6 +109,9 @@ export default async function Home() {
             </div>
             <p className="text-[#A15842] font-medium text-xl mt-3">Sports</p>
           </div>
+        </Link>
+
+        <Link href="/categories/workshops">
           <div className="bg-[#FFFFFF33]/10 p-3 rounded-xl shadow-card">
             <div className="relative max-w-full h-48">
               <Image
@@ -109,6 +123,9 @@ export default async function Home() {
             </div>
             <p className="text-[#A15842] font-medium text-xl mt-3">Workshops</p>
           </div>
+        </Link>
+
+        <Link href="/categories/business">
           <div className="bg-[#FFFFFF33]/10 p-3 rounded-xl shadow-card">
             <div className="relative max-w-full h-48">
               <Image
@@ -120,6 +137,9 @@ export default async function Home() {
             </div>
             <p className="text-[#A15842] font-medium text-xl mt-3">Business</p>
           </div>
+        </Link>
+
+        <Link href="/categories/health">
           <div className="bg-[#FFFFFF33]/10 p-3 rounded-xl shadow-card">
             <div className="relative max-w-full h-48">
               <Image
@@ -131,6 +151,9 @@ export default async function Home() {
             </div>
             <p className="text-[#A15842] font-medium text-xl mt-3">Health</p>
           </div>
+        </Link>
+
+        <Link href="/categories/wedding">
           <div className="bg-[#FFFFFF33]/10 p-3 rounded-xl shadow-card">
             <div className="relative max-w-full h-48">
               <Image
@@ -140,10 +163,11 @@ export default async function Home() {
                 className="object-cover rounded-md"
               />
             </div>
-            <p className="text-[#A15842] font-medium text-xl mt-3">Weeding</p>
+            <p className="text-[#A15842] font-medium text-xl mt-3">Wedding</p>
           </div>
-        </div>
+        </Link>
       </div>
+    </div>
       <div className="container pb-24 w-full">
         <h2 className="font-bold text-[#92403F] text-4xl uppercase text-center tracking-widest">
           Upcoming Events
