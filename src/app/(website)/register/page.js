@@ -54,6 +54,8 @@ export default function Page() {
         };
         
         console.log('Form submission successful:', userData);
+
+        localStorage.setItem('mahotsavUserData', JSON.stringify(userData));
         
         resetForm();
         

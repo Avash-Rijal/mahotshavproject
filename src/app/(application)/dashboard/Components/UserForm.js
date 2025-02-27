@@ -9,79 +9,84 @@ const UserForm = () => {
   const [profileImage, setProfileImage] = useState("");
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef(null);
-  const [userData, setUserData] = useState(null);
+  const [userData, setUserData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    gender: "Male",
+    language: "English",
+    country: "Nepal",
+    timeZone: "GMT +5:45 (Nepal)",
+    address: ""
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch("/api/user", {
-          method: "GET",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
+    try {
+      const storedUserData = localStorage.getItem('mahotsavUserData');
+      if (storedUserData) {
+        const parsedData = JSON.parse(storedUserData);
+        setUserData({
+          name: parsedData.name || "",
+          email: parsedData.email || "",
+          phone: parsedData.phone || "",
+          gender: "Male",
+          language: "English",
+          country: "Nepal",
+          timeZone: "GMT +5:45 (Nepal)",
+          address: parsedData.address || ""
         });
-        
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          throw new Error(`Failed to fetch user data: ${response.status} - ${errorData.error || 'Unknown error'}`);
+
+        if (parsedData.profileImage) {
+          setProfileImage(parsedData.profileImage);
         }
-        
-        const data = await response.json();
-        setUserData(data);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-        setError(error.message || "Unknown error");
-      } finally {
-        setLoading(false);
       }
-    };
-    
-    fetchUserData();
+    } catch (err) {
+      console.error("Error loading user data from localStorage:", err);
+      setError("Failed to load user data");
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  console.log(userData)
+  // const handleImageUpload = (event) => {
+  //   const file = event.target.files[0];
+  //   if (file && file.type.startsWith('image/')) {
+  //     const reader = new FileReader();  
+  //     reader.onload = (e) => {
+  //       setProfileImage(e.target.result);
+  //     };
+  //     reader.readAsDataURL(file);
+  //   }
+  // };
 
-  const handleImageUpload = (event) => {
-    const file = event.target.files[0];
-    if (file && file.type.startsWith('image/')) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setProfileImage(e.target.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  // const handleDragOver = (e) => {
+  //   e.preventDefault();
+  //   if (isEditMode) {
+  //     setIsDragging(true);
+  //   }
+  // };
 
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    if (isEditMode) {
-      setIsDragging(true);
-    }
-  };
+  // const handleDragLeave = (e) => {
+  //   e.preventDefault();
+  //   setIsDragging(false);
+  // };
 
-  const handleDragLeave = (e) => {
-    e.preventDefault();
-    setIsDragging(false);
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    setIsDragging(false);
-    if (!isEditMode) return;
+  // const handleDrop = (e) => {
+  //   e.preventDefault();
+  //   setIsDragging(false);
+  //   if (!isEditMode) return;
     
-    const file = e.dataTransfer.files[0];
-    if (file && file.type.startsWith('image/')) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setProfileImage(e.target.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  //   const file = e.dataTransfer.files[0];
+  //   if (file && file.type.startsWith('image/')) {
+  //     const reader = new FileReader();
+  //     reader.onload = (e) => {
+  //       setProfileImage(e.target.result);
+  //     };
+  //     reader.readAsDataURL(file);
+  //   }
+  // };
 
   const handleSave = () => {
     const inputs = document.querySelectorAll("input:not(:disabled), select:not(:disabled)");
@@ -94,6 +99,20 @@ const UserForm = () => {
     });
 
     if (allFieldsFilled) {
+      const updatedUserData = {
+        name: document.getElementById("fullName").value,
+        email: document.getElementById("primaryEmail").value,
+        phone: document.getElementById("phoneNumber").value,
+        gender: document.getElementById("gender").value,
+        language: document.getElementById("language").value,
+        country: document.getElementById("country").value,
+        timeZone: document.getElementById("timeZone").value,
+        address: userData.address,
+        // profileImage: profileImage // Save profile image too
+      };
+      
+      localStorage.setItem('mahotsavUserData', JSON.stringify(updatedUserData));
+      
       setShowNotification(true);
       setTimeout(() => {
         setShowNotification(false);
@@ -107,6 +126,14 @@ const UserForm = () => {
     setIsEditMode(false);
   };
 
+  if (loading) {
+    return <div className="container p-4">Loading user data...</div>;
+  }
+
+  if (error) {
+    return <div className="container p-4 text-red-500">{error}</div>;
+  }
+
   return (
     <div className="container p-4">
       <div
@@ -116,14 +143,14 @@ const UserForm = () => {
             "linear-gradient(97.8deg, rgba(225, 153, 35, 0.1) 0.36%, rgba(145, 62, 61, 0.1) 100%)",
         }}
       >
-        <div 
+        {/* <div 
           className="relative"
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
         >
           <img
-            src={profileImage}
+            src={profileImage || "/default-profile.png"} // Fallback to default image
             alt="Profile"
             className={`rounded-full w-12 h-12 ${isEditMode ? 'cursor-pointer hover:opacity-80' : ''}`}
             onClick={() => isEditMode && fileInputRef.current?.click()}
@@ -146,10 +173,10 @@ const UserForm = () => {
               </div>
             </>
           )}
-        </div>
+        </div> */}
         <div className="flex-grow">
-          <h2 className="text-lg font-medium">Rameshwor Bhattacharya</h2>
-          <p className="text-gray-600">rbhatta@gmail.com</p>
+          <h2 className="text-lg font-medium">{userData.name}</h2>
+          <p className="text-gray-600">{userData.email}</p>
         </div>
         <button
           className="flex gap-3 border border-[#A15842] rounded-[4px] text-[#A15842] px-4 py-2 items-center"
@@ -161,9 +188,6 @@ const UserForm = () => {
       </div>
 
       <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      </form>
-
-      <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label htmlFor="fullName" className="block text-gray-600 mb-2">
             Full Name
@@ -171,8 +195,10 @@ const UserForm = () => {
           <input
             id="fullName"
             type="text"
-            placeholder="Your First Name"
-            className="w-full border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-red-400"
+            placeholder="Your Full Name"
+            defaultValue={userData.name}
+            disabled={!isEditMode}
+            className="w-full border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-red-400 disabled:bg-gray-100"
           />
         </div>
 
@@ -184,7 +210,7 @@ const UserForm = () => {
             id="phoneNumber"
             type="text"
             placeholder="Enter your phone number"
-            defaultValue="9848032333"
+            defaultValue={userData.phone}
             disabled={!isEditMode}
             className="w-full border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-red-400 disabled:bg-gray-100"
           />
@@ -197,6 +223,7 @@ const UserForm = () => {
           <select
             id="gender"
             disabled={!isEditMode}
+            defaultValue={userData.gender}
             className="w-full border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-red-400 disabled:bg-gray-100"
           >
             <option>Male</option>
@@ -212,6 +239,7 @@ const UserForm = () => {
           <select
             id="language"
             disabled={!isEditMode}
+            defaultValue={userData.language}
             className="w-full border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-red-400 disabled:bg-gray-100"
           >
             <option>English</option>
@@ -228,7 +256,7 @@ const UserForm = () => {
             id="country"
             type="text"
             placeholder="Enter your country"
-            defaultValue="Nepal"
+            defaultValue={userData.country}
             disabled={!isEditMode}
             className="w-full border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-red-400 disabled:bg-gray-100"
           />
@@ -240,7 +268,9 @@ const UserForm = () => {
           </label>
           <select
             id="timeZone"
-            className="w-full border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-red-400"
+            defaultValue={userData.timeZone}
+            disabled={!isEditMode}
+            className="w-full border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-red-400 disabled:bg-gray-100"
           >
             <option>GMT +5:45 (Nepal)</option>
             <option>GMT +5:30 (India)</option>
@@ -256,7 +286,21 @@ const UserForm = () => {
             id="primaryEmail"
             type="email"
             placeholder="Enter your email"
-            defaultValue="rbhatta@gmail.com"
+            defaultValue={userData.email}
+            disabled={!isEditMode}
+            className="w-full border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-red-400 disabled:bg-gray-100"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="address" className="block text-gray-600 mb-2">
+            Address
+          </label>
+          <input
+            id="address"
+            type="text"
+            placeholder="Enter your address"
+            defaultValue={userData.address}
             disabled={!isEditMode}
             className="w-full border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-red-400 disabled:bg-gray-100"
           />
@@ -267,7 +311,6 @@ const UserForm = () => {
             type="button"
             className="bg-[#A15842] text-white py-2 px-6 rounded-lg focus:outline-none flex gap-3"
             onClick={() => {
-              setIsEditMode(false);
               handleSave();
             }}
           >
@@ -276,7 +319,6 @@ const UserForm = () => {
           </button>
         </div>
 
-        {/* Success Notification */}
         <div
           className={`overflow-x-hidden fixed top-10 right-0 bg-green-500 text-white px-6 py-4 rounded shadow-lg transform transition-transform duration-500 flex gap-3 ${
             showNotification ? "translate-x-0" : "translate-x-full"
@@ -286,7 +328,6 @@ const UserForm = () => {
           <span>User Information Saved</span>
         </div>
 
-        {/* Error Notification */}
         <div
           className={`overflow-x-hidden fixed top-20 right-0 bg-red-500 text-white px-6 py-4 rounded shadow-lg transform transition-transform duration-500 flex gap-3 ${
             showErrorNotification ? "translate-x-0" : "translate-x-full"
