@@ -124,7 +124,7 @@ export default function EventDetailPage({ params }) {
     
     doc.text(`Event: ${event?.name}`, 20, 55);
     doc.text(`Date: ${event?.startDate}${event?.endDate ? ` to ${event?.endDate}` : ""}`, 20, 65);
-    doc.text(`Time: ${new Date(event?.startTime).toLocaleTimeString()} - ${new Date(event?.endTime).toLocaleTimeString()}`, 20, 75);
+    doc.text(`Time: ${new Date(event?.startTime).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})} - ${new Date(event?.endTime).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}`, 20, 75);
     doc.text(`Venue: ${event?.venue}, ${event?.eventCity}`, 20, 85);
     doc.text(`Ticket Holder: ${name}`, 20, 95);
     
@@ -134,10 +134,10 @@ export default function EventDetailPage({ params }) {
       doc.setFont("helvetica", "bold");
       doc.text("Event Entry: FREE", 20, 115);
     } else {
-      doc.text(`Unit Price: $${event.price}`, 20, 115);
+      doc.text(`Unit Price: Rs.${event.price}`, 20, 115);
       
       doc.setFont("helvetica", "bold");
-      doc.text(`Total Price: $${calculateTotalPrice()}`, 20, 125);
+      doc.text(`Total Price: Rs.${calculateTotalPrice()}`, 20, 125);
     }
     
     doc.setFont("helvetica", "italic");
@@ -218,11 +218,11 @@ export default function EventDetailPage({ params }) {
                     <>
                       <div className="flex justify-between mb-2">
                         <span className="text-gray-600">Unit Price:</span>
-                        <span className="font-medium">${event.price}</span>
+                        <span className="font-medium">Rs.{event.price}</span>
                       </div>
                       <div className="flex justify-between text-[#92403F] font-bold text-lg">
                         <span>Total:</span>
-                        <span>${calculateTotalPrice()}</span>
+                        <span>Rs.{calculateTotalPrice()}</span>
                       </div>
                     </>
                   )}
@@ -257,7 +257,7 @@ export default function EventDetailPage({ params }) {
         </div>
       )}
 
-      <div className="container shadow-lg overflow-hidden py-24">
+      <div className="container overflow-hidden py-24">
         <div className="flex flex-col justify-between md:flex-row p-16">
           <div>
             <div className="text-gray-700">
@@ -277,7 +277,7 @@ export default function EventDetailPage({ params }) {
           </div>
           <div className="relative max-w-full cursor-pointer overflow-hidden rounded-lg">
             <Image
-              src="/event.png"
+              src={event?.bannerImage}
               alt="event image"
               width={500}
               height={320}
@@ -308,7 +308,7 @@ export default function EventDetailPage({ params }) {
               <br />
               {isFreeEvent() ? 
                 "Entry: Free" : 
-                `Ticket Price: $${event?.price}`}
+                `Ticket Price: Rs.${event?.price}`}
             </p>
             {event?.guests && event?.guests.length > 0 && (
               <>

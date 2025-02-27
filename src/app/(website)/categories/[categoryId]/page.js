@@ -48,7 +48,7 @@ export default async function CategoryPage({ params }) {
     if (!price || price === "0" || price === "") {
       return "FREE";
     }
-    return `$${parseFloat(price).toFixed(2)}`;
+    return `Rs.${parseFloat(price).toFixed(2)}`;
   };
   
   return (

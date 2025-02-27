@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/app/db";
-import { events } from "@/app/drizzle/schema";
+import { events, participants } from "@/app/drizzle/schema";
 import { eq } from "drizzle-orm";
 
 export async function GET(
@@ -26,6 +26,7 @@ export async function GET(
         guests: events.guestList,
         entryType: events.entryType,
         description: events.description,
+        bannerImage: events.bannerImage,
       })
       .from(events)
       .where(eq(events.id, id));
@@ -67,6 +68,7 @@ export async function PUT(req, { params }) {
         participants: updatedData.participants,
         entryType: updatedData.entryType,
         description: updatedData.description,
+        bannerImage: updatedData.bannerImage,
       })
       .where(eq(events.id, id));
 
@@ -78,6 +80,40 @@ export async function PUT(req, { params }) {
   } catch (error) {
     console.error("Error updating event:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+
+export async function DELETE(request, { params }) {
+  try {
+    const { id } = params;
+    
+    console.log(`Attempting to delete event with ID: ${id}`);
+    
+    // Start a transaction to ensure data consistency
+    await db.transaction(async (tx) => {
+      // First, delete all participants associated with this event
+      await tx.delete(participants).where(eq(participants.eventId, id));
+      console.log(`Deleted participants for event ${id}`);
+      
+      // Then, delete the event itself
+      await tx.delete(events).where(eq(events.id, id));
+      console.log(`Deleted event ${id}`);
+    });
+    
+    return NextResponse.json({ 
+      success: true, 
+      message: `Event ${id} and all related records successfully deleted` 
+    }, { status: 200 });
+  } catch (error) {
+    console.error("Error deleting event:", error);
+    return NextResponse.json(
+      { 
+        error: "Failed to delete event", 
+        details: error.message,
+        constraint: error.constraint_name 
+      }, 
+      { status: 500 }
+    );
   }
 }
 

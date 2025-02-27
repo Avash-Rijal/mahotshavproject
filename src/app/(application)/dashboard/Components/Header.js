@@ -5,16 +5,14 @@ const Header = () => {
   return (
     <header className="flex items-center justify-end bg-white p-4 shadow-md">
       <div className="flex items-center space-x-4 gap-4">
-        {/* Notification Icon */}
-        <button className="relative">
+        {/* <button className="relative">
           <span className="w-2 h-2 rounded-full bg-red-500 absolute top-0 right-0"></span>
           <Bell />
-        </button>
+        </button> */}
 
-        {/* Profile Section */}
         <div className="flex items-center space-x-2">
           <img
-            src="/path/to/profile-pic.jpg" // Replace with the actual path to the user's profile image
+            src="/path/to/profile-pic.jpg"
             alt="Profile"
             className="h-8 w-8 rounded-full object-cover"
           />
@@ -25,9 +23,9 @@ const Header = () => {
             </Link>
           </div>
         </div>
-        <div className="hover:cursor-pointer">
+        {/* <div className="hover:cursor-pointer">
           <Settings />
-        </div>
+        </div> */}
       </div>
     </header>
   );

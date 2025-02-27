@@ -2,10 +2,12 @@
 
 import { useToast } from "@/hooks/use-toast";
 import { authClient } from "lib/auth-client";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function Page() {
   const { toast } = useToast();
+  const router = useRouter();
 
   const initialFormState = {
     name: "",
@@ -59,6 +61,8 @@ export default function Page() {
           title: "Account created successfully!",
           status: "success"
         });
+
+        router.push("/login")
       },
       onError: (ctx) => {
         console.log(ctx);

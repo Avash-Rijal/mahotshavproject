@@ -1,14 +1,49 @@
 "use client";
 import { File, Info, AlertTriangle, PencilIcon, Upload } from "lucide-react";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 const UserForm = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   const [showErrorNotification, setShowErrorNotification] = useState(false);
-  const [profileImage, setProfileImage] = useState("/api/placeholder/48/48");
+  const [profileImage, setProfileImage] = useState("");
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef(null);
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch("/api/user", {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(`Failed to fetch user data: ${response.status} - ${errorData.error || 'Unknown error'}`);
+        }
+        
+        const data = await response.json();
+        setUserData(data);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        setError(error.message || "Unknown error");
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchUserData();
+  }, []);
+
+  console.log(userData)
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
@@ -125,9 +160,7 @@ const UserForm = () => {
         </button>
       </div>
 
-      {/* Rest of the form remains unchanged */}
       <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* ... existing form fields ... */}
       </form>
 
       <form className="grid grid-cols-1 md:grid-cols-2 gap-6">

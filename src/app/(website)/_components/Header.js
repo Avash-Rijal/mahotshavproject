@@ -8,6 +8,7 @@ export default function Header() {
 
   const menuItems = [
     { name: "Home", route: "/" },
+    { name: "Categories", route: "/categories" },
     { name: "Events", route: "/events" },
     { name: "About Us", route: "/about" },
     { name: "Login", route: "/login" },
@@ -36,7 +37,6 @@ export default function Header() {
             />
           </div>
 
-          {/* Desktop Menu */}
           <div className="hidden lg:flex items-center space-x-8">
             {menuItems.map((item) => (
               <Link
@@ -52,7 +52,6 @@ export default function Header() {
             ))}
           </div>
 
-          {/* Mobile Menu Button */}
           <button
             onClick={() => setMenuOpen(!menuOpen)}
             className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
@@ -72,7 +71,6 @@ export default function Header() {
           </button>
         </div>
 
-        {/* Mobile Menu Dropdown */}
         <div
           className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${
             menuOpen ? "opacity-100" : "max-h-0 opacity-0"

@@ -14,21 +14,21 @@ export default function Page() {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch('/api/events');
-        
+        const response = await fetch("/api/events");
+
         if (!response.ok) {
-          throw new Error('Failed to fetch events');
+          throw new Error("Failed to fetch events");
         }
-        
+
         const data = await response.json();
-        
+
         if (Array.isArray(data)) {
           setEventsTable(data);
           if (data.length > 0) {
             setFirstEvent(data[0]);
           }
         } else {
-          throw new Error('Data is not in the expected format');
+          throw new Error("Data is not in the expected format");
         }
       } catch (error) {
         console.error("Error fetching events:", error);
@@ -39,27 +39,30 @@ export default function Page() {
     fetchEvents();
   }, []);
 
-
   return (
     <div className="pt-24 pb-24 bg-gradient-to-br from-[#FCE5D8] to-[#FBE8EF] min-h-screen">
       <div className="container justify-center flex flex-col lg:flex-row lg:gap-16 gap-8 py-24 items-center">
-        <div className="relative max-w-full cursor-pointer overflow-hidden rounded-lg">
-          <Image
-            src="/event.png"
-            alt="event image"
-            width={500}
-            height={320}
-            className="rounded-lg hover:scale-105 transform transition-transform duration-300 object-cover"
-          />
-        </div>
+        <Link href={`/events/${firstEvent?.id}`}>
+          <div className="relative max-w-full cursor-pointer overflow-hidden rounded-lg">
+            <Image
+              src={firstEvent?.bannerImage}
+              alt="event image"
+              width={500}
+              height={320}
+              className="rounded-lg hover:scale-105 transform transition-transform duration-300 object-cover"
+            />
+          </div>
+        </Link>
 
         <div className="flex flex-col gap-3">
           <div className="text-[#5B5B5B] font-normal text-xl">
             {firstEvent?.startDate} | {firstEvent?.venue}
           </div>
-          <h3 className="text-[#92403F] text-4xl font-semibold cursor-pointer">
-            {firstEvent?.name}
-          </h3>
+          <Link href={`/events/${firstEvent?.id}`}>
+            <h3 className="text-[#92403F] text-4xl font-semibold cursor-pointer">
+              {firstEvent?.name}
+            </h3>
+          </Link>
           <div
             className="text-[#2C2C2C] font-normal text-2xl line-clamp-2 overflow-hidden"
             dangerouslySetInnerHTML={{ __html: firstEvent?.description }}
@@ -148,7 +151,10 @@ export default function Page() {
 
         <div className="container grid gap-8 grid-cols-1 lg:grid-cols-2 mt-12">
           {eventsTable.map((data) => (
-            <div className="flex justify-between max-w-[600px] p-4" key={data.id}>
+            <div
+              className="flex justify-between max-w-[600px] p-4"
+              key={data.id}
+            >
               <div className="flex flex-col gap-3">
                 <div className="text-[#5B5B5B] font-normal text-sm">
                   {data.startDate} | {data.venue}
@@ -160,13 +166,16 @@ export default function Page() {
                   className="text-[#2C2C2C] font-normal text-md line-clamp-2 overflow-hidden"
                   dangerouslySetInnerHTML={{ __html: data.description }}
                 />
-                <Link href={`/events/${data.id}`} className="bg-[#92403F] cursor-pointer text-center text-white py-2 max-w-32 font-normal text-sm rounded-sm">
+                <Link
+                  href={`/events/${data.id}`}
+                  className="bg-[#92403F] cursor-pointer text-center text-white py-2 max-w-32 font-normal text-sm rounded-sm"
+                >
                   Join Now
                 </Link>
               </div>
               <div className="cursor-pointer overflow-hidden w-[134px] h-[250px] relative">
                 <Image
-                  src="/event.png"
+                  src={data.bannerImage}
                   alt="event photo"
                   className="hover:scale-105 transform transition-transform duration-300 object-cover"
                   layout="fill"

@@ -197,6 +197,7 @@ export async function GET() {
         guests: events.guestList,
         entryType: events.entryType,
         description: events.description,
+        bannerImage: events.bannerImage,
       })
       .from(events);
 
