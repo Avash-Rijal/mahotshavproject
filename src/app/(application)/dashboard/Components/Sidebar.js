@@ -52,19 +52,6 @@ const Sidebar = () => {
           Revenue
         </Link>
       </nav>
-      <div className="absolute bottom-10 left-6 flex items-center gap-3">
-        <img
-          src="/path/to/profile-pic.jpg"
-          alt="Profile"
-          className="h-8 w-8 rounded-full object-cover"
-        />
-        <div>
-          <p className="text-gray-700 font-medium">Rameshwor B.</p>
-          <Link href="/dashboard/profile" className="text-sm text-blue-500">
-            View profile
-          </Link>
-        </div>
-      </div>
     </div>
   );
 };

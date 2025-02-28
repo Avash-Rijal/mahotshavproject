@@ -74,7 +74,7 @@ export default function Page() {
         <h2 className="font-bold text-[#92403F] text-4xl uppercase text-center tracking-widest">
           Find Events
         </h2>
-        <div className="grid lg:grid-cols-3 gap-5 md:grid-cols-2 grid-cols-1 w-2/3 mt-12">
+        {/* <div className="grid lg:grid-cols-3 gap-5 md:grid-cols-2 grid-cols-1 w-2/3 mt-12">
           <div className="relative flex-1">
             <input
               type="text"
@@ -147,7 +147,7 @@ export default function Page() {
               </div>
             )}
           </div>
-        </div>
+        </div> */}
 
         <div className="container grid gap-8 grid-cols-1 lg:grid-cols-2 mt-12">
           {eventsTable.map((data) => (
