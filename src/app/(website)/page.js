@@ -230,9 +230,12 @@ export default function Home() {
                   className="text-[#2C2C2C] font-normal text-md"
                   dangerouslySetInnerHTML={{ __html: data.description }}
                 />
-                <button className="bg-[#92403F] text-white py-2 max-w-32 font-normal text-sm rounded-sm">
+                <Link
+                  href={`/events/${data.id}`}
+                  className="bg-[#92403F] cursor-pointer text-center text-white py-2 max-w-32 font-normal text-sm rounded-sm"
+                >
                   Join Now
-                </button>
+                </Link>
               </div>
               <div className="cursor-pointer overflow-hidden w-[200px] h-[250px] relative">
                 <Image
