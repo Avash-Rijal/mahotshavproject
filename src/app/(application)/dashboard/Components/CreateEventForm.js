@@ -1,7 +1,6 @@
   "use client";
   import { Minus, Plus, Upload, X } from "lucide-react";
-  import React, { useState, forwardRef, useEffect } from "react";
-  import CKeditor from "./CKeditor/CKeditor";
+import React, { forwardRef, useEffect, useState } from "react";
 
   const CreateEventForm = forwardRef(({ onSubmit, initialData }, ref) => {
     const [guestList, setGuestList] = useState(initialData?.guestList || [""]);
