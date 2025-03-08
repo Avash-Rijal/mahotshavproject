@@ -1,28 +1,62 @@
+"use client"
 import Image from "next/image";
-import { db } from "../db";
-import { events } from "../drizzle/schema";
+// import { db } from "../db";
+// import { events } from "../drizzle/schema";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
-export default async function Home() {
-  const eventsTable = await db
-    .select({
-      id: events.id,
-      name: events.name,
-      venue: events.venueName,
-      price: events.ticketPrice,
-      startTime: events.startTime,
-      endTime: events.endTime,
-      startDate: events.startDate,
-      endDate: events.endDate,
-      eventCity: events.city,
-      participants: events.expectedParticipants,
-      guests: events.guestList,
-      entryType: events.entryType,
-      description: events.description,
-    })
-    .from(events);
+export default function Home() {
 
-  const firstEvent = eventsTable[0];
+  const [eventsTable, setEventsTable] = useState([]);
+  const [firstEvent, setFirstEvent] = useState(null);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch("/api/events");
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch events");
+        }
+
+        const data = await response.json();
+
+        if (Array.isArray(data)) {
+          setEventsTable(data);
+          if (data.length > 0) {
+            setFirstEvent(data[0]);
+          }
+        } else {
+          throw new Error("Data is not in the expected format");
+        }
+      } catch (error) {
+        console.error("Error fetching events:", error);
+        setError(error.message);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
+  // const eventsTable = await db
+  //   .select({
+  //     id: events.id,
+  //     name: events.name,
+  //     venue: events.venueName,
+  //     price: events.ticketPrice,
+  //     startTime: events.startTime,
+  //     endTime: events.endTime,
+  //     startDate: events.startDate,
+  //     endDate: events.endDate,
+  //     eventCity: events.city,
+  //     participants: events.expectedParticipants,
+  //     guests: events.guestList,
+  //     entryType: events.entryType,
+  //     description: events.description,
+  //   })
+  //   .from(events);
+
+  // const firstEvent = eventsTable[0];
 
   return (
     <div className="pt-24 pb-24 bg-gradient-to-br from-[#FCE5D8] to-[#FBE8EF] min-h-screen">
@@ -200,7 +234,7 @@ export default async function Home() {
                   Join Now
                 </button>
               </div>
-              <div className="cursor-pointer overflow-hidden w-[134px] h-[250px] relative">
+              <div className="cursor-pointer overflow-hidden w-[200px] h-[250px] relative">
                 <Image
                   src={data.bannerImage}
                   alt="event photo"

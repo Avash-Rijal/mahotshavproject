@@ -99,28 +99,60 @@
 
 // export default EventTable;
 
-import { db } from "@/app/db";
-import { events } from "@/app/drizzle/schema";
+"use client"
+// import { db } from "@/app/db";
+// import { events } from "@/app/drizzle/schema";
 import EventTableClient from "./EventTableClient";
+import { useEffect, useState } from "react";
 
-const EventTable = async () => {
-  const eventsTable = await db
-    .select({
-      id: events.id,
-      name: events.name,
-      venue: events.venueName,
-      price: events.ticketPrice,
-      startTime: events.startTime,
-      endTime: events.endTime,
-      startDate: events.startDate,
-      endDate: events.endDate,
-      eventCity: events.city,
-      participants: events.expectedParticipants,
-      guests: events.guestList,
-      entryType: events.entryType,
-      description: events.description,
-    })
-    .from(events);
+const EventTable = () => {
+  const [eventsTable, setEventsTable] = useState([]);
+  // const eventsTable = await db
+  //   .select({
+  //     id: events.id,
+  //     name: events.name,
+  //     venue: events.venueName,
+  //     price: events.ticketPrice,
+  //     startTime: events.startTime,
+  //     endTime: events.endTime,
+  //     startDate: events.startDate,
+  //     endDate: events.endDate,
+  //     eventCity: events.city,
+  //     participants: events.expectedParticipants,
+  //     guests: events.guestList,
+  //     entryType: events.entryType,
+  //     description: events.description,
+  //   })
+  //   .from(events);
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch("/api/events");
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch events");
+        }
+
+        const data = await response.json();
+
+        if (Array.isArray(data)) {
+          setEventsTable(data);
+          // if (data.length > 0) {
+          //   setFirstEvent(data[0]);
+          // }
+        } else {
+          throw new Error("Data is not in the expected format");
+        }
+      } catch (error) {
+        console.error("Error fetching events:", error);
+        setError(error.message);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
+  console.log(eventsTable)
 
   return <EventTableClient initialEvents={eventsTable} />;
 };

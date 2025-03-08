@@ -40,6 +40,7 @@ export default async function CategoryPage({ params }) {
       eventCity: events.city,
       price: events.ticketPrice,
       entryType: events.entryType,
+      image: events.bannerImage,
     })
     .from(events)
     .where(eq(events.category, categoryId));
@@ -68,7 +69,7 @@ export default async function CategoryPage({ params }) {
                 <div className="bg-white/40 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
                   <div className="relative h-48">
                     <Image
-                      src="/event.png"
+                      src={event.image}
                       alt={event.name}
                       fill
                       className="object-cover"
