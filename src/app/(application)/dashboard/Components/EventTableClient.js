@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 // import React, { useState } from "react";
@@ -68,6 +68,9 @@ const DeleteButton = ({ eventId, onDelete }) => {
 const EventTableClient = ({ initialEvents }) => {
   const router = useRouter();
   const [eventsData, setEventsData] = useState(initialEvents);
+  useEffect(() => {
+    setEventsData(initialEvents);
+  }, [initialEvents]);
   const [deleteStatus, setDeleteStatus] = useState(null);
 
   const handleDelete = (deletedId) => {

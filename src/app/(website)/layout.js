@@ -30,7 +30,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        <link rel="logo" href="/logo.png" />
+        <link rel="icon" href="/logo.png" sizes="any" />
       </head>
       <body
         className={`${poppins.className} ${geistSans.variable} ${geistMono.variable} antialiased`}
