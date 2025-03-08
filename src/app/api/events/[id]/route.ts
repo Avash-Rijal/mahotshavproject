@@ -3,12 +3,14 @@ import { db } from "@/app/db";
 import { events, participants } from "@/app/drizzle/schema";
 import { eq } from "drizzle-orm";
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(req: NextRequest) {
   try {
-    const { id } = params;
+    const url = new URL(req.url);
+    const id = url.pathname.split("/").pop(); // Get the id from the URL
+
+    if (!id) {
+      return NextResponse.json({ error: "Missing event ID" }, { status: 400 });
+    }
 
     const data = await db
       .select({
@@ -41,13 +43,15 @@ export async function GET(
   }
 }
 
-export async function PUT(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(req: NextRequest) {
   try {
-    const { id } = params;
+    const url = new URL(req.url);
+    const id = url.pathname.split("/").pop();
     const updatedData = await req.json();
+
+    if (!id) {
+      return NextResponse.json({ error: "Missing event ID" }, { status: 400 });
+    }
 
     const result = await db
       .update(events)
@@ -79,12 +83,14 @@ export async function PUT(
   }
 }
 
-export async function DELETE(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(req: NextRequest) {
   try {
-    const { id } = params;
+    const url = new URL(req.url);
+    const id = url.pathname.split("/").pop();
+
+    if (!id) {
+      return NextResponse.json({ error: "Missing event ID" }, { status: 400 });
+    }
 
     await db.transaction(async (tx) => {
       await tx.delete(participants).where(eq(participants.eventId, id));
