@@ -1,20 +1,12 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/app/db";
 import { events } from "@/app/drizzle/schema";
 import { eq } from "drizzle-orm";
 
-type RouteParams = {
-  params: {
-    categoryId: string;
-  };
-};
-
-export async function GET(
-  req: Request,
-  { params }: RouteParams
-) {
+export async function GET(req: NextRequest) {
   try {
-    const { categoryId } = await params;
+    const url = new URL(req.url);
+    const categoryId = url.pathname.split("/").pop(); // Extract categoryId from the URL
 
     if (!categoryId) {
       return NextResponse.json({ error: "Category ID is required" }, { status: 400 });
