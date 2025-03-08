@@ -50,7 +50,7 @@ export default async function Home() {
           </Link>
           <div
             className="text-[#2C2C2C] font-normal text-2xl"
-            dangerouslySetInnerHTML={{ __html: firstEvent?.description }}
+            dangerouslySetInnerHTML={{ __html: firstEvent?.description || ""}} 
           />
         </div>
       </div>
