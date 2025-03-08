@@ -16,14 +16,10 @@ export async function POST(req: Request) {
     const body = await req.json();
     console.log("Received Body:", body);
 
-    // Convert ticketId to an array if it's a string
     let ticketIdArray = Array.isArray(body.ticketId) ? body.ticketId : [body.ticketId];
+    body.ticketId = ticketIdArray;
 
-    // Validate request body
-    const parsedData = participantSchema.safeParse({ 
-      ...body, 
-      ticketId: ticketIdArray 
-    });
+    const parsedData = participantSchema.safeParse(body);
 
     if (!parsedData.success) {
       console.error("Validation Error:", parsedData.error.format());
@@ -38,7 +34,7 @@ export async function POST(req: Request) {
     await db.insert(participants).values({
       id: randomUUID(),
       eventId: eventId,
-      ticketId: JSON.stringify(ticketId), // Store array as JSON if needed
+      eventTicket: Array.isArray(ticketId) ? ticketId : [ticketId],
       revenue: ticketPrice || "0",
     });
 
