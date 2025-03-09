@@ -64,7 +64,7 @@ export default function Page() {
             </h3>
           </Link>
           <div
-            className="text-[#2C2C2C] font-normal text-2xl line-clamp-2 overflow-hidden"
+            className="text-[#2C2C2C] font-normal text-2xl line-clamp-3 overflow-hidden"
             dangerouslySetInnerHTML={{ __html: firstEvent?.description }}
           />
         </div>
@@ -173,14 +173,14 @@ export default function Page() {
                   Join Now
                 </Link>
               </div>
-              <div className="cursor-pointer overflow-hidden w-[134px] h-[250px] relative">
+              {/* <div className="cursor-pointer overflow-hidden w-[134px] h-[250px] relative">
                 <Image
                   src={data.bannerImage}
                   alt="event photo"
                   className="hover:scale-105 transform transition-transform duration-300 object-cover"
                   layout="fill"
                 />
-              </div>
+              </div> */}
             </div>
           ))}
         </div>
