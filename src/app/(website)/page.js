@@ -60,7 +60,35 @@ export default function Home() {
 
   return (
     <div className="pt-24 pb-24 bg-gradient-to-br from-[#FCE5D8] to-[#FBE8EF] min-h-screen">
-      <div className="container justify-center flex flex-col lg:flex-row lg:gap-16 gap-8 py-24 items-center">
+      {/* <div className="container justify-center flex flex-col lg:flex-row lg:gap-16 gap-8 py-24 items-center">
+        <Link href={`/events/${firstEvent?.id}`}>
+          <div className="relative max-w-full cursor-pointer overflow-hidden rounded-lg">
+            <Image
+              src={firstEvent?.bannerImage}
+              alt="event image"
+              width={500}
+              height={320}
+              className="rounded-lg hover:scale-105 transform transition-transform duration-300 object-cover"
+            />
+          </div>
+        </Link>
+
+        <div className="flex flex-col max-w-[500px] gap-3">
+          <div className="text-[#5B5B5B] font-normal text-xl">
+            {firstEvent?.startDate} | {firstEvent?.venue}
+          </div>
+          <Link href={`/events/${firstEvent?.id}`}>
+            <h3 className="text-[#92403F] text-4xl font-semibold cursor-pointer">
+              {firstEvent?.name}
+            </h3>
+          </Link>
+          <div
+            className="text-[#2C2C2C] font-normal text-2xl"
+            dangerouslySetInnerHTML={{ __html: firstEvent?.description || ""}} 
+          />
+        </div>
+      </div> */}
+            <div className="container justify-center flex flex-col lg:flex-row lg:gap-16 gap-8 py-24 items-center">
         <Link href={`/events/${firstEvent?.id}`}>
           <div className="relative max-w-full cursor-pointer overflow-hidden rounded-lg">
             <Image
@@ -83,11 +111,12 @@ export default function Home() {
             </h3>
           </Link>
           <div
-            className="text-[#2C2C2C] font-normal text-2xl"
-            dangerouslySetInnerHTML={{ __html: firstEvent?.description || ""}} 
+            className="text-[#2C2C2C] font-normal text-2xl line-clamp-3 overflow-hidden"
+            dangerouslySetInnerHTML={{ __html: firstEvent?.description }}
           />
         </div>
       </div>
+
       <div className="container py-24 w-full">
         <h2 className="container font-bold text-[#92403F] text-4xl uppercase text-center tracking-widest">
           Explore Event Categories
@@ -244,7 +273,7 @@ export default function Home() {
                   className="hover:scale-105 transform transition-transform duration-300 object-cover"
                   layout="fill"
                 />
-              </div>
+              </div> */}
             </div>
           ))}
         </div>

@@ -84,7 +84,6 @@ export default async function CategoryPage({ params }) {
                       {event.startDate} | {event.venue}, {event.eventCity}
                     </p>
                     <div className="flex justify-between items-center mt-4">
-                      <span className="text-sm text-gray-500">{event.entryType}</span>
                       <button className="bg-[#92403F] text-white py-1 px-4 rounded text-sm">
                         View Details
                       </button>
