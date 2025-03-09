@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import Image from "next/image";
 // import { db } from "../db";
 // import { events } from "../drizzle/schema";
@@ -6,7 +6,6 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function Home() {
-
   const [eventsTable, setEventsTable] = useState([]);
   const [firstEvent, setFirstEvent] = useState(null);
 
@@ -88,7 +87,7 @@ export default function Home() {
           />
         </div>
       </div> */}
-            <div className="container justify-center flex flex-col lg:flex-row lg:gap-16 gap-8 py-24 items-center">
+      <div className="container justify-center flex flex-col lg:flex-row lg:gap-16 gap-8 py-24 items-center">
         <Link href={`/events/${firstEvent?.id}`}>
           <div className="relative max-w-full cursor-pointer overflow-hidden rounded-lg">
             <Image
@@ -266,7 +265,7 @@ export default function Home() {
                   Join Now
                 </Link>
               </div>
-              <div className="cursor-pointer overflow-hidden w-[200px] h-[250px] relative">
+              {/* <div className="cursor-pointer overflow-hidden w-[200px] h-[250px] relative">
                 <Image
                   src={data.bannerImage}
                   alt="event photo"
