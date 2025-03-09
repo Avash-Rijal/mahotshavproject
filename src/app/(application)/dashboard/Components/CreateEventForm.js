@@ -5,7 +5,7 @@ import React, { forwardRef, useEffect, useState } from "react";
   const CreateEventForm = forwardRef(({ onSubmit, initialData }, ref) => {
     const [guestList, setGuestList] = useState(initialData?.guestList || [""]);
     const [participants, setParticipants] = useState(
-      initialData?.participants || 10
+      initialData?.participants || 1
     );
     const [entryType, setEntryType] = useState(
       initialData?.ticketPrice ? "Paid" : "Free"
@@ -179,6 +179,11 @@ import React, { forwardRef, useEffect, useState } from "react";
       submitForm: handleSubmit,
       resetForm,
     }));
+
+    const handleParticipantsChange = (e) => {
+      const value = parseInt(e.target.value, 10);
+      if (value > 0) setParticipants(value);
+    };
 
     return (
       <div className="container">
@@ -397,7 +402,13 @@ import React, { forwardRef, useEffect, useState } from "react";
                   >
                     <Minus />
                   </button>
-                  <span className="text-base font-normal">{participants}</span>
+                  <input
+                    type="number"
+                    id="tickets"
+                    value={participants}
+                    onChange={handleParticipantsChange}
+                    className="w-16 p-2 border text-center rounded focus:outline-none focus:ring focus:ring-red-200"
+                  />
                   <button
                     type="button"
                     className="px-2 py-2 bg-[#A15842] text-white rounded-lg"
