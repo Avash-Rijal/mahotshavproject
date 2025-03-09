@@ -265,7 +265,7 @@ export default function Home() {
                   Join Now
                 </Link>
               </div>
-              {/* <div className="cursor-pointer overflow-hidden w-[200px] h-[250px] relative">
+              <div className="cursor-pointer overflow-hidden w-[200px] h-[250px] relative">
                 <Image
                   src={data.bannerImage}
                   alt="event photo"
