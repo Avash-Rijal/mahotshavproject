@@ -73,7 +73,7 @@ export default function RevenueTable() {
                     {item.category || "Uncategorized"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900 font-medium">
-                    ${parseFloat(item.totalRevenue || "0").toFixed(2)}
+                    Rs.{parseFloat(item.totalRevenue || "0").toFixed(2)}
                   </td>
                 </tr>
               ))}
